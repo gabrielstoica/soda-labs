@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import { Events } from "./utils/Events.sol";
 import { Users } from "./utils/Types.sol";
-import { Counter } from "../src/Counter.sol";
+import { StringStorage } from "../src/StringStorage.sol";
 import "forge-std/Test.sol";
 
 abstract contract Base_Test is Test, Events {
@@ -17,23 +17,23 @@ abstract contract Base_Test is Test, Events {
                                    TEST CONTRACTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    Counter internal counter;
+    StringStorage internal stringStorage;
 
     /*//////////////////////////////////////////////////////////////////////////
                                   SET-UP FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
 
     function setUp() public virtual {
-        users = Users({ admin: createUser("admin") });
+        users = Users({ deployer: createUser("deployer"), eve: createUser("eve"), bob: createUser("bob") });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
                             DEPLOYMENT-RELATED FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Deploys the Counter contract
-    function deployCounter(uint256 foo, string memory bar) internal returns (Counter) {
-        return new Counter(foo, bar);
+    /// @dev Deploys the {StringStorage} contract
+    function deployStringStorage() internal returns (StringStorage) {
+        return new StringStorage();
     }
 
     /*//////////////////////////////////////////////////////////////////////////

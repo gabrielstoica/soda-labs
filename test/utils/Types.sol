@@ -2,6 +2,10 @@
 pragma solidity ^0.8.20;
 
 struct Users {
-    // Default admin of the Counter contract
-    address payable admin;
+    // Deployer account
+    address payable deployer;
+    // Eve's account
+    address eve;
+    // Bob's account
+    address bob;
 }
