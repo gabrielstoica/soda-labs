@@ -1,4 +1,4 @@
-# Foundry Boilerplate
+# SodaLabs Foundry Implementation
 
 Simple boilerplate for getting started quickly developing Foundry projects.
 
@@ -39,22 +39,6 @@ Use the following command to compile all the project's smart contracts:
 forge compile
 ```
 
-### Build
-
-Use the following command to build all the project's smart contracts:
-
-```bash
-forge build
-```
-
-### Clean
-
-Use the following command to remove the build artifacts and cache directories:
-
-```bash
-forge clean
-```
-
 ### Test
 
 Use the following command to run all the project's tests:
@@ -68,20 +52,20 @@ forge test
 Use the following command to deploy the smart contract on Sepolia testnet:
 
 ```bash
-forge script script/Counter.s.sol FOO_VALUE BAR_VALUE --sig "run(uint256,string)" --rpc-url sepolia --broadcast --verify
+forge script script/StringStorage.s.sol --rpc-url sepolia --broadcast --verify
 ```
 
 ### If you want to test the deployment process locally:
 
-1. Start [Anvil](https://book.getfoundry.sh/anvil/):
+1. Spin up a local Ethereum [Geth](https://geth.ethereum.org/downloads) node:
 
 ```bash
-anvil
+geth --http --sepolia --syncmode "snap"
 ```
 
-2. Update the `.env` file with a private key given to you by Anvil.
+2. Update the `.env` file with a private key of an account having enough funds on the `Sepolia` testnet.
 3. Run the deployment command:
 
 ```bash
-forge script script/Counter.s.sol:Counter FOO_VALUE BAR_VALUE --sig "run(uint256,string)" --fork-url http://localhost:8545 --broadcast
+forge script script/StringStorage.sol --fork-url http://127.0.0.1:8545
 ```
