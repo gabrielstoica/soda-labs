@@ -28,6 +28,7 @@ contract StringStorageTest is Base_Test {
         // Expect to emit the {StringSet} event once a string is set
         vm.expectEmit({ emitter: address(stringStorage) });
         emit StringSet({ sender: users.eve, data: _data });
+
         // Run the test
         stringStorage.setString(_data);
     }
