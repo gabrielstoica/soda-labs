@@ -18,32 +18,62 @@ contract StringStorageTest is Base_Test {
         vm.stopPrank();
     }
 
-    function test_SetString() public {
+    function test_SignData() external {
         // Make Eve the caller for this test suite
-        vm.startPrank({ msgSender: users.eve });
+        vm.startPrank({ msgSender: users.eve.user });
 
-        // Set the desired string
-        string memory _data = "testStringEve";
+        uint256 privateKey = uint256(0x45d9991fa6e6015f7b6b64612aef0e25a27bdac5dc88b4784723256bda2c24a6);
+        string memory data = "test";
+        bytes memory signature =
+            hex"36ad41d5cfc7e42d06272b3d92dd997079231a6064a092dbceb915aa4bd1b48a10c148d154d58907845f09600a3a075102d918b064bce745357882719257eba7";
+
+        bytes memory generatedSignature = stringStorage.signData(privateKey, data);
+
+        assertEq(generatedSignature, signature);
+    }
+
+    modifier givenSignatureProvided() {
+        _;
+    }
+
+    function test_AuthenticatedSetString() external givenSignatureProvided {
+        // Make Eve the caller for this test suite
+        vm.startPrank({ msgSender: users.eve.user });
+
+        string memory data = "test";
+        bytes memory sig =
+            hex"36ad41d5cfc7e42d06272b3d92dd997079231a6064a092dbceb915aa4bd1b48a10c148d154d58907845f09600a3a075102d918b064bce745357882719257eba7";
+
+        bytes memory publicKey = hex"023af2066249340f16af8acc4ec2d72e8737e1a445383332ce5881980738271fd7";
 
         // Expect to emit the {StringSet} event once a string is set
         vm.expectEmit({ emitter: address(stringStorage) });
-        emit StringSet({ sender: users.eve, data: _data });
+        emit StringSet({ sender: users.eve.user, signature: sig, data: data });
 
         // Run the test
-        stringStorage.setString(_data);
+        stringStorage.setString({ data: data, signature: sig, publicKey: publicKey });
     }
 
-    function test_GetString() public {
+    modifier givenSignatureNotProvided() {
+        _;
+    }
+
+    function test_UnauthenticatedSetString() public givenSignatureNotProvided {
         // Make Bob the caller for this test suite
-        vm.startPrank({ msgSender: users.bob });
+        vm.startPrank({ msgSender: users.bob.user });
 
         // Set the desired string
-        string memory _data = "testStringBob";
+        string memory data = "testStringBob";
+
+        // Expect to emit the {StringSet} event once a string is set
+        vm.expectEmit({ emitter: address(stringStorage) });
+        emit StringSet({ sender: users.bob.user, signature: "", data: data });
 
         // Run the test
-        stringStorage.setString(_data);
+        stringStorage.setString({ data: data, signature: "", publicKey: "" });
 
         // Test if the string was correctly set
-        assertEq(stringStorage.getString(), _data);
+        string memory storedData = stringStorage.getString({ signature: "" });
+        assertEq(storedData, data);
     }
 }

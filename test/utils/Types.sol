@@ -5,7 +5,12 @@ struct Users {
     // Deployer account
     address payable deployer;
     // Eve's account
-    address eve;
+    UserWithKey eve;
     // Bob's account
-    address bob;
+    UserWithKey bob;
+}
+
+struct UserWithKey {
+    address payable user;
+    uint256 key;
 }
